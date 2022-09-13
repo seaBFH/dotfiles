@@ -1,0 +1,10 @@
+*.pyc
+htop/
+configstore/
+karabiner/
+.*.swp
+iterm2/
+coc/
+filezilla/
+jgit/
+.DS*
