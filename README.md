@@ -5,7 +5,7 @@ WIP
 ## Installation
 
 ```
-# install packages(brew,stow,nvim,ranger,fzf,rg,python3,git,xclip,nodejs(npm),yarn,ghq,exa,peco...)
+# install packages(brew,stow,nvim,ranger,fzf,rg,python3,git,xclip,nodejs(npm),yarn,ghq,exa,peco,jq, pandoc...)
 # TDOO:use scripts
 
 # install rust
