@@ -1,0 +1,10 @@
+{
+  "suggest.noselect": false,
+  "diagnostic.checkCurrentLine": true,
+  "coc.preferences.formatOnSaveFiletypes": [
+    "go"
+  ],
+  "go.goplsOptions": { 
+    "staticcheck": true
+  }
+}

@@ -41,10 +41,15 @@ Plug 'VundleVim/Vundle.vim'
 " if coc break again, try more stable version
 Plug 'neoclide/coc.nvim', {'branch': 'master', 'do': 'yarn install --frozen-lockfile'}
 " Plug 'Valloric/YouCompleteMe'
+"Plug 'towolf/vim-helm'
+
+" treesitter
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 " debugging tools
 Plug 'mfussenegger/nvim-dap'
 Plug 'rcarriga/nvim-dap-ui'
+Plug 'theHamsta/nvim-dap-virtual-text'
 Plug 'leoluz/nvim-dap-go'
 Plug 'neovim/nvim-lspconfig'
 Plug 'simrat39/rust-tools.nvim'
@@ -52,7 +57,7 @@ Plug 'simrat39/rust-tools.nvim'
 " Syntactic language support
 Plug 'cespare/vim-toml'
 Plug 'stephpy/vim-yaml'
-"Plug 'fatih/vim-go, { 'tag': '*' }
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'rust-lang/rust.vim'
 Plug 'vim-test/vim-test'
 "Plug 'neovim/nvim-lspconfig'
@@ -62,6 +67,8 @@ Plug 'godlygeek/tabular'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
 Plug 'buoto/gotests-vim'
 
+" ASCII diagrams
+Plug 'willchao612/vim-diagon'
 
 " vim-codefmt plugins code formatting
 " Add maktaba and codefmt to the runtimepath.
@@ -133,12 +140,28 @@ Plug 'tpope/vim-rhubarb'
 Plug 'rbong/vim-flog'
 Plug 'stsewd/fzf-checkout.vim'
 Plug 'tpope/vim-git'
+Plug 'kdheepak/lazygit.nvim'
+Plug 'ThePrimeagen/git-worktree.nvim'
 " gitlab
 "Plug 'shumphrey/fugitive-gitlab.vim'
 
 
 " Note tools
 Plug 'vimwiki/vimwiki'
+
+" OrgMode
+Plug 'jceb/vim-orgmode'
+
+" Vim Script
+Plug 'nvim-lua/plenary.nvim'
+Plug 'folke/todo-comments.nvim'
+
+" trouble
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'folke/trouble.nvim'
+
+" undotree 
+Plug 'mbbill/undotree'
 
 " All of your Plugs must be added before the following line
 call plug#end() " required
@@ -162,6 +185,22 @@ filetype plugin indent on " required
 " crates nvim plugin
 lua require('crates').setup()
 
+lua << EOF
+  require("todo-comments").setup {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+  }
+EOF
+
+lua << EOF
+  require("trouble").setup {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+  }
+EOF
+
 " pathogen config
 " execute pathogen#infect()
 
@@ -170,7 +209,14 @@ lua require('crates').setup()
 " =============================================================================
 syntax on
 filetype plugin indent on
-set smartindent " 开启新行时使用智能自动缩进
+"set smartindent " 开启新行时使用智能自动缩进
+" indent should be 4, only option
+" show existing tab with 4 spaces width
+set tabstop=4
+" when indenting with '>', use 4 spaces width
+set shiftwidth=4
+" On pressing tab, insert 4 spaces
+set expandtab
 set incsearch " 输入搜索内容时就显示搜索结果
 set hlsearch " 搜索时高亮显示被找到的文本 :noh to close highlight
 set noerrorbells " 关闭错误信息响铃
@@ -185,6 +231,7 @@ set relativenumber
 set hidden
 set ignorecase
 set smartcase
+set cursorline
 
 " dealing with history
 set noswapfile
@@ -204,19 +251,19 @@ set scl=yes " keep signcolumn open
 " Neat X clipboard integration
 " <leader>p will paste clipboard into buffer
 " <leader>c will copy entire buffer into clipboard
-"if has('win32')
-"echoerr "Sorry, clipboard integration is not supported yet on windows" 
-"elseif has('mac')
+if has('win32')
+echoerr "Sorry, clipboard integration is not supported yet on windows" 
+elseif has('mac')
 "noremap <leader>p :r !pbpaste<cr><cr>
 "noremap <leader>c :w !pbcopy<cr><cr>
-""use + register to yank to clipboard
-"noremap <leader>y "+y 
-"elseif has('unix')
-"noremap <leader>p :read !xsel --clipboard --output<cr>
-"noremap <leader>c :w !xsel -ib<cr><cr>
-"else
-"echoerr "Sorry, clipboard integration is not supported on current system"
-"endif
+"use + register to yank to clipboard
+noremap <leader>y "+y 
+elseif has('unix')
+"use + register to yank to clipboard
+noremap <leader>y "+y 
+else
+echoerr "Sorry, clipboard integration is not supported on current system"
+endif
 
 " 配置多语言环境
 if has("multi_byte")
@@ -391,6 +438,12 @@ nnoremap <silent> <space>i  :call CocActionAsync('codeAction', '', 'Implement mi
 
 " Show actions available at this location
 nnoremap <silent> <space>a  :CocAction<cr>
+
+" CocRestart
+nnoremap <leader>cr  :CocRestart<cr>
+
+" Coc CodeAction
+command! -nargs=* -range CocAction :call CocActionAsync('codeActionRange', <line1>, <line2>, <f-args>)
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -623,3 +676,7 @@ augroup autoformat_settings
 augroup END
 
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" markdown-preview config
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:mkdp_browser = 'firefox'
