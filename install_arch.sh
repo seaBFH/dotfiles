@@ -13,7 +13,7 @@ pacman -S stow nodejs yarn neovim fzf ranger lf paco exa ghq xclip kubectl helm 
 npm install -g live-server
 
 # aur
-yay -S ttf-victor-mono-nerd feishu-bin virtualbox-bin
+yay -S ttf-victor-mono-nerd feishu-bin virtualbox-bin drawio-desktop-bin xmind buf-bin baidunetdisk-bin
 # reinstall feishu-bin if feishu do not work.  
 
 # rustup
