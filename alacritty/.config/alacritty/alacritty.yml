@@ -31,12 +31,22 @@ window:
   #
   # Blank space added around the window in pixels. This padding is scaled
   # by DPI and the specified value is always added at both opposing sides.
-  padding:
-    x: 6
-    y: 6
+  #padding:
+    #x: 2
+    #y: 2
+
+  opacity: 0.85
+
+  #selection:
+  #semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"
+  # When set to `true`, selected text will be copied to the primary clipboard.
+  #save_to_clipboard: false
+  # Allow terminal applications to change Alacritty's window title.
+  dynamic_title: false
+
 
   # Spread additional padding evenly around the terminal content.
-  dynamic_padding: false
+  dynamic_padding: true
 
   # Window decorations
   #
@@ -260,14 +270,7 @@ colors:
 # The value `0.0` is completely transparent and `1.0` is opaque.
 # background_opacity: 1.0
 # background_opacity: 0.80
-window.opacity: 0.80
-
-#selection:
-#semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"
-# When set to `true`, selected text will be copied to the primary clipboard.
-#save_to_clipboard: false
-# Allow terminal applications to change Alacritty's window title.
-dynamic_title: false
+#window.opacity: 0.80
 
 #cursor:
 # Cursor style

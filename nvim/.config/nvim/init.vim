@@ -97,6 +97,9 @@ Plug 'nikolvs/vim-sunbather'
 Plug 'NLKNguyen/papercolor-theme'
 " Plug 'gruvbox-community/gruvbox' " color schemes
 
+" transparent
+Plug 'xiyaowong/nvim-transparent'
+
 " nerdtree
 Plug 'preservim/nerdtree'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
@@ -199,6 +202,24 @@ lua << EOF
     -- or leave it empty to use the default settings
     -- refer to the configuration section below
   }
+EOF
+
+lua << EOF
+require("transparent").setup({
+  enable = true, -- boolean: enable transparent
+  extra_groups = { -- table/string: additional groups that should be cleared
+    -- In particular, when you set it to 'all', that means all available groups
+
+    -- example of akinsho/nvim-bufferline.lua
+    "BufferLineTabClose",
+    "BufferlineBufferSelected",
+    "BufferLineFill",
+    "BufferLineBackground",
+    "BufferLineSeparator",
+    "BufferLineIndicatorSelected",
+  },
+  exclude = {}, -- table: groups you don't want to clear
+})
 EOF
 
 " pathogen config
