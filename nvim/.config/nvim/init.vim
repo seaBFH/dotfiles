@@ -100,6 +100,9 @@ Plug 'NLKNguyen/papercolor-theme'
 " transparent
 Plug 'xiyaowong/nvim-transparent'
 
+" indentline
+Plug 'lukas-reineke/indent-blankline.nvim'
+
 " nerdtree
 Plug 'preservim/nerdtree'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
@@ -220,6 +223,14 @@ require("transparent").setup({
   },
   exclude = {}, -- table: groups you don't want to clear
 })
+EOF
+
+lua << EOF
+require("indent_blankline").setup {
+    -- for example, context is off by default, use this to turn it on
+    show_current_context = true,
+    show_current_context_start = true,
+}
 EOF
 
 " pathogen config
