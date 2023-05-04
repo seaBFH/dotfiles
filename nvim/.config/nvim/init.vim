@@ -42,6 +42,7 @@ Plug 'VundleVim/Vundle.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'master', 'do': 'yarn install --frozen-lockfile'}
 " Plug 'Valloric/YouCompleteMe'
 "Plug 'towolf/vim-helm'
+Plug 'github/copilot.vim'
 
 " treesitter
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -61,7 +62,7 @@ Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'rust-lang/rust.vim'
 Plug 'vim-test/vim-test'
 "Plug 'neovim/nvim-lspconfig'
-Plug 'plasticboy/vim-markdown'
+"Plug 'plasticboy/vim-markdown'
 Plug 'godlygeek/tabular'
 "Plug 'instant-markdown/vim-instant-markdown'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
@@ -98,7 +99,7 @@ Plug 'NLKNguyen/papercolor-theme'
 " Plug 'gruvbox-community/gruvbox' " color schemes
 
 " transparent
-Plug 'xiyaowong/nvim-transparent'
+Plug 'xiyaowong/transparent.nvim'
 
 " indentline
 Plug 'lukas-reineke/indent-blankline.nvim'
@@ -209,7 +210,12 @@ EOF
 
 lua << EOF
 require("transparent").setup({
-  enable = true, -- boolean: enable transparent
+  groups = { -- table: default groups
+    'Normal', 'NormalNC', 'Comment', 'Constant', 'Special', 'Identifier',
+    'Statement', 'PreProc', 'Type', 'Underlined', 'Todo', 'String', 'Function',
+    'Conditional', 'Repeat', 'Operator', 'Structure', 'LineNr', 'NonText',
+    'SignColumn', 'CursorLineNr', 'EndOfBuffer',
+  },
   extra_groups = { -- table/string: additional groups that should be cleared
     -- In particular, when you set it to 'all', that means all available groups
 
@@ -221,7 +227,7 @@ require("transparent").setup({
     "BufferLineSeparator",
     "BufferLineIndicatorSelected",
   },
-  exclude = {}, -- table: groups you don't want to clear
+  exclude_groups = {}, -- table: groups you don't want to clear
 })
 EOF
 
@@ -520,6 +526,9 @@ map <leader>ra :Ranger<CR>
 " lf config
 let g:lf_map_keys = 0 " disable lf.vim default keys
 map <leader>lf :Lf<CR>
+
+" lazygit config
+map <leader>lg :LazyGit<CR>
 
 " disable all linters as that is taken care of by coc.nvim
 let g:go_diagnostics_enabled = 0
