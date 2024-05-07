@@ -59,6 +59,7 @@ Plug 'simrat39/rust-tools.nvim'
 Plug 'cespare/vim-toml'
 Plug 'stephpy/vim-yaml'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'vim-test/vim-test'
 Plug 'rust-lang/rust.vim'
 Plug 'vim-test/vim-test'
 "Plug 'neovim/nvim-lspconfig'
@@ -86,7 +87,7 @@ Plug 'google/vim-glaive'
 " airline
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'edkolev/tmuxline.vim'
+"Plug 'edkolev/tmuxline.vim'
 
 Plug 'andymass/vim-matchup'
 Plug 'luochen1990/rainbow'
@@ -99,7 +100,7 @@ Plug 'NLKNguyen/papercolor-theme'
 " Plug 'gruvbox-community/gruvbox' " color schemes
 
 " transparent
-Plug 'xiyaowong/transparent.nvim'
+"Plug 'xiyaowong/transparent.nvim'
 
 " indentline
 Plug 'lukas-reineke/indent-blankline.nvim'
@@ -123,7 +124,7 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'saecki/crates.nvim', { 'tag': 'v0.2.1' }
 
 
-" Plug 'nvim-telescope/telescope.nvim'
+ "Plug 'nvim-telescope/telescope.nvim'
 " Plug 'nvim-telescope/telescope-fzy-native.nvim'
 
 Plug 'ap/vim-css-color'
@@ -209,35 +210,39 @@ lua << EOF
 EOF
 
 lua << EOF
-require("transparent").setup({
-  groups = { -- table: default groups
-    'Normal', 'NormalNC', 'Comment', 'Constant', 'Special', 'Identifier',
-    'Statement', 'PreProc', 'Type', 'Underlined', 'Todo', 'String', 'Function',
-    'Conditional', 'Repeat', 'Operator', 'Structure', 'LineNr', 'NonText',
-    'SignColumn', 'CursorLineNr', 'EndOfBuffer',
-  },
-  extra_groups = { -- table/string: additional groups that should be cleared
-    -- In particular, when you set it to 'all', that means all available groups
-
-    -- example of akinsho/nvim-bufferline.lua
-    "BufferLineTabClose",
-    "BufferlineBufferSelected",
-    "BufferLineFill",
-    "BufferLineBackground",
-    "BufferLineSeparator",
-    "BufferLineIndicatorSelected",
-  },
-  exclude_groups = {}, -- table: groups you don't want to clear
-})
-EOF
-
-lua << EOF
-require("indent_blankline").setup {
-    -- for example, context is off by default, use this to turn it on
-    show_current_context = true,
-    show_current_context_start = true,
+local highlight = {
+    "RainbowRed",
+    "RainbowYellow",
+    "RainbowBlue",
+    "RainbowOrange",
+    "RainbowGreen",
+    "RainbowViolet",
+    "RainbowCyan",
 }
+
+local hooks = require "ibl.hooks"
+-- create the highlight groups in the highlight setup hook, so they are reset
+-- every time the colorscheme changes
+hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+    vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#E06C75" })
+    vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#E5C07B" })
+    vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#61AFEF" })
+    vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#D19A66" })
+    vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#98C379" })
+    vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
+    vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
+end)
+
+require("ibl").setup { indent = { highlight = highlight } }
 EOF
+
+"lua << EOF
+"require("indent_blankline").setup {
+    "-- for example, context is off by default, use this to turn it on
+    "show_current_context = true,
+    "show_current_context_start = true,
+"}
+"EOF
 
 " pathogen config
 " execute pathogen#infect()
@@ -628,7 +633,9 @@ endfunction
 "let g:airline_theme='molokai'
 "let g:airline_theme='tomorrow'
 "let g:airline_theme='cobalt2'
-let g:airline_theme='violet'
+"let g:airline_theme='violet'
+let g:airline_theme='dark'
+"let g:airline_theme='light'
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -721,3 +728,42 @@ augroup END
 " markdown-preview config
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:mkdp_browser = 'firefox'
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" dap debugging keymaps & configs
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+nnoremap <silent> <F5> :lua require'dap'.continue()<CR>
+nnoremap <silent> <F10> :lua require'dap'.step_over()<CR>
+nnoremap <silent> <F11> :lua require'dap'.step_into()<CR>
+nnoremap <silent> <F12> :lua require'dap'.step_out()<CR>
+nnoremap <silent> <leader>b :lua require'dap'.toggle_breakpoint()<CR>
+nnoremap <silent> <leader>B :lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>
+nnoremap <silent> <leader>lp :lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" fugitive browse handler
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! FugitiveBrowseGitLab(remote, dir, rev, file, line)
+  if a:remote =~# 'git@gitlab.arksec.cn:'
+    let repo = substitute(a:remote, 'git@gitlab.arksec.cn:', '', '')
+    let repo = substitute(repo, '\.git$', '', '')
+    let url = 'https://gitlab.arksec.cn/'.repo
+    if a:file != ''
+      let url .= '/blob/'.a:rev.'/'.a:file
+      if a:line != ''
+        let url .= '#L'.a:line
+      endif
+    endif
+    call netrw#BrowseX(url, 0)
+    return 1
+  endif
+  return 0
+endfunction
+
+augroup FugitiveGitLab
+  autocmd!
+  autocmd User FugitiveGBrowsePre call FugitiveBrowseGitLab(<q-args>)
+augroup END
+
+hi Normal guibg=NONE ctermbg=NONE
+
